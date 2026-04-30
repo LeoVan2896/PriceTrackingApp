@@ -8,7 +8,12 @@ async function createProduct() {
     const url       = document.getElementById('productUrl').value.trim();
     const autoTrack = document.getElementById('autoTrack').checked;
     const msg       = document.getElementById('productMsg');
-
+    const supportedSites = ['newegg.com', 'bhphotovideo.com', 'adorama.com', 'microcenter.com'];
+    const isSupported = supportedSites.some(site => url.includes(site));
+    if (url && !isSupported) {
+        showMessage(msg, 'Supported stores: Newegg, B&H Photo, Adorama, Micro Center', 'error');
+        return;
+    }
     if (!name || !brand || !category) {
         showMessage(msg, 'Name, brand, and category are required', 'error');
         return;

@@ -60,6 +60,22 @@ public class PriceScraperService {
             return Optional.empty();
         }
     }
+    private Optional<BigDecimal> scrapeBHPhoto(Document doc) {
+        log.info("Page title: {}", doc.title());
+        log.info("Page length: {} chars", doc.html().length());
+        Element priceEl = doc.selectFirst("span[data-selenium='pricingPrice']");
+        if (priceEl == null) {
+            priceEl = doc.selectFirst("div.price-value");
+        }
+        return parsePrice(priceEl);
+    }
+
+    private Optional<BigDecimal> scrapeAdorama(Document doc) {
+        log.info("Page title: {}", doc.title());
+        log.info("Page length: {} chars", doc.html().length());
+        Element priceEl = doc.selectFirst("span.ux-price-lg");
+        return parsePrice(priceEl);
+    }
     private Optional<BigDecimal> scrapeNewegg(Document doc) {
         log.info("Page title: {}", doc.title());
         Element priceEl = doc.selectFirst("div.price-current strong");
