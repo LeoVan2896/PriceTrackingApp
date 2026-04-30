@@ -109,3 +109,12 @@ input[type="checkbox"] {
     cursor: pointer;
     accent-color: #1a1a2e;
 }
+.btn-delete {
+    background: #c62828;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+.btn-delete:hover {
+    background: #b71c1c;
+}

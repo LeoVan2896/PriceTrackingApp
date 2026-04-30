@@ -80,6 +80,13 @@ async function loadProducts() {
 
         products.forEach((p, index) => {
             const row = document.createElement('tr');
+            row.style.cursor = 'pointer';
+            row.title = 'Click to view price chart';
+            row.onclick = () => {
+                document.getElementById('chartProductId').value = p.id;
+                loadChart();
+                document.getElementById('chartContainer').scrollIntoView({ behavior: 'smooth' });
+            };
             row.innerHTML = `
         <td>${p.id}</td>
         <td>${p.name}</td>
@@ -88,12 +95,13 @@ async function loadProducts() {
         <td>${p.autoTrack ? '🟢 Auto' : '⚪ Manual'}</td>
         <td>${formatDate(p.createdAt)}</td>
         <td>${lowestPrices[index]}</td>
+        <td><button class="btn-delete" onclick="deleteProduct(event, ${p.id}, '${p.name}')">Delete</button></td>
       `;
             tbody.appendChild(row);
         });
 
     } catch (error) {
-        tbody.innerHTML = '<tr><td colspan="7">Failed to load products</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8">Failed to load products</td></tr>';
     }
 }
 // --- Fetch Lowest Price for a Product ---
@@ -227,6 +235,28 @@ async function loadProducts() {
 
     } catch (error) {
         tbody.innerHTML = '<tr><td colspan="7">Failed to load products</td></tr>';
+    }
+}
+async function deleteProduct(event, id, name) {
+    // Stop the click from also triggering the chart row click
+    event.stopPropagation();
+
+    if (!confirm(`Delete "${name}" and all its price history?`)) return;
+
+    try {
+        const response = await fetch(`${BASE_URL}/${id}`, {
+            method: 'DELETE'
+        });
+
+        if (response.status === 204) {
+            loadProducts();
+        } else {
+            const result = await response.json();
+            alert(result.message || 'Failed to delete product');
+        }
+
+    } catch (error) {
+        alert('Network error');
     }
 }
 
