@@ -2,13 +2,25 @@ const BASE_URL = '/api/products';
 
 // --- Create Product ---
 async function createProduct() {
-    const name     = document.getElementById('productName').value.trim();
-    const brand    = document.getElementById('productBrand').value.trim();
-    const category = document.getElementById('productCategory').value.trim();
-    const msg      = document.getElementById('productMsg');
+    const name      = document.getElementById('productName').value.trim();
+    const brand     = document.getElementById('productBrand').value.trim();
+    const category  = document.getElementById('productCategory').value.trim();
+    const url       = document.getElementById('productUrl').value.trim();
+    const autoTrack = document.getElementById('autoTrack').checked;
+    const msg       = document.getElementById('productMsg');
 
     if (!name || !brand || !category) {
-        showMessage(msg, 'All fields are required', 'error');
+        showMessage(msg, 'Name, brand, and category are required', 'error');
+        return;
+    }
+
+    if (autoTrack && !url) {
+        showMessage(msg, 'A URL is required to enable auto tracking', 'error');
+        return;
+    }
+
+    if (url && !url.includes('newegg.com')) {
+        showMessage(msg, 'Only Newegg URLs are currently supported', 'error');
         return;
     }
 
@@ -16,7 +28,7 @@ async function createProduct() {
         const response = await fetch(BASE_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, brand, category })
+            body: JSON.stringify({ name, brand, category, url, autoTrack })
         });
 
         const result = await response.json();
@@ -26,10 +38,19 @@ async function createProduct() {
             return;
         }
 
-        showMessage(msg, `Created: ${result.data.name} (ID: ${result.data.id})`, 'success');
+        showMessage(
+            msg,
+            `✅ Created: ${result.data.name} (ID: ${result.data.id})${autoTrack ? ' — auto tracking enabled' : ''}`,
+            'success'
+        );
+
+        // Clear form
         document.getElementById('productName').value = '';
         document.getElementById('productBrand').value = '';
         document.getElementById('productCategory').value = '';
+        document.getElementById('productUrl').value = '';
+        document.getElementById('autoTrack').checked = false;
+
         loadProducts();
 
     } catch (error) {
