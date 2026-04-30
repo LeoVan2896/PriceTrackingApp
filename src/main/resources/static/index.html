@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Price Tracker</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -75,6 +76,18 @@
             </thead>
             <tbody id="historyTableBody"></tbody>
         </table>
+    </section>
+    <!-- Price Chart -->
+    <section class="card">
+        <h2>Price History Chart</h2>
+        <div class="form-group">
+            <input type="number" id="chartProductId" placeholder="Product ID" />
+            <button onclick="loadChart()">Show Chart</button>
+        </div>
+        <div id="chartContainer" style="display:none;">
+            <h3 id="chartTitle" style="margin-bottom:1rem; font-size:1rem; color:#1a1a2e;"></h3>
+            <canvas id="priceChart"></canvas>
+        </div>
     </section>
 
 </main>
